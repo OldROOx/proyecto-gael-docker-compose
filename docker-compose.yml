@@ -1,0 +1,63 @@
+# docker-compose.yml
+version: "3.8"
+
+services:
+
+  # 1. Servicio de Base de Datos (MySQL)
+  db-mysql-hueytlelt:
+    image: mysql:8.0
+    container_name: db-mysql-hueytlelt
+    ports:
+      - "3307:3306" # Tu puerto cambiado, está perfecto
+    environment:
+      MYSQL_ROOT_PASSWORD: poyoSkato*666 # Es buena práctica usar variables, pero tu valor fijo está bien
+      MYSQL_DATABASE: gaelandrehueytlelt
+    volumes:
+      - db-data-mysql:/var/lib/mysql
+    networks:
+      - mi-red-interna
+    # --- AÑADE ESTO ---
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 2. Servicio de Backend (Node.js API)
+  backend-api-hueytlelt:
+    build: ./backend-api
+    container_name: backend-api-hueytlelt
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: db-mysql-hueytlelt
+      DB_USER: root
+      DB_PASSWORD: poyoSkato*666 # Usa la misma contraseña
+      DB_NAME: gaelandrehueytlelt
+    networks:
+      - mi-red-interna
+    # --- MODIFICA ESTA SECCIÓN ---
+    depends_on:
+      db-mysql-hueytlelt:
+        condition: service_healthy # ¡Esta es la magia!
+
+  # 3. Servicio de Frontend (HTML/JS/Nginx)
+  frontend-web-hueytlelt:
+    build: ./frontend-web # Construye desde la carpeta frontend-web
+    container_name: frontend-web-hueytlelt # Requisito: tu apellido
+    ports:
+      - "3000:80" # Expone el puerto 3000 al host (mapea al 80 de nginx)
+    networks:
+      - mi-red-interna
+    depends_on:
+      - backend-api-hueytlelt # Requisito: orden de arranque
+
+# Definición de Redes
+networks:
+  mi-red-interna: # Red interna para que se hablen por nombre
+    driver: bridge
+
+# Definición de Volúmenes
+volumes:
+  db-data-mysql: # Requisito: volumen nombrado explícito
+    driver: local

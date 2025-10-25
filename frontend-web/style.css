@@ -1,0 +1,9 @@
+/* frontend-web/style.css */
+body { font-family: sans-serif; background: #f4f4f4; padding: 20px; max-width: 800px; margin: auto; }
+h1, h2 { color: #333; }
+#mi-nombre { color: #007bff; font-weight: bold; }
+form { margin-bottom: 20px; }
+input { padding: 8px; margin-right: 10px; border: 1px solid #ccc; border-radius: 4px; }
+button { padding: 8px 12px; background: #28a745; color: white; border: none; cursor: pointer; border-radius: 4px; }
+ul { list-style: none; padding: 0; }
+li { background: white; border: 1px solid #ddd; padding: 10px; margin-bottom: 5px; border-radius: 4px; }
